@@ -29,6 +29,7 @@ display_menu() {
 }
 
 install_models() {
+    # Read models from the file and trim any leading/trailing whitespace
     mapfile -t models < "$modelsFile"
     selectedModels=()
 
@@ -60,7 +61,14 @@ install_models() {
     for i in "${!models[@]}"; do
         if [[ ${selectedModels[$i]} == true ]]; then
             model="${models[$i]}"
-            if ! docker exec ollama ollama list | grep -q "$model"; then
+            # Ensure to trim whitespace
+            model=$(echo "$model" | xargs)
+
+            # Check if the model is already installed
+            installed_models=$(docker exec ollama ollama list)
+
+            # Check for case-insensitive match of the model name
+            if ! echo "$installed_models" | grep -qi "$model"; then
                 echo "Pulling model $model..."
                 docker exec -it ollama ollama pull "$model"
             else
@@ -79,11 +87,22 @@ case "$command" in
             echo "Docker is installed and running."
             docker-compose up -d
 
-            if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-                xdg-open "http://localhost:3000"
-            elif [[ "$OSTYPE" == "darwin"* ]]; then
-                open "http://localhost:3000"
-            fi
+            url="http://localhost:3000"
+
+            case "$OSTYPE" in
+                linux-gnu*)
+                    xdg-open "$url" >/dev/null 2>&1 &
+                    ;;
+                darwin*)
+                    open "$url"
+                    ;;
+                msys*|cygwin*|win32)
+                    explorer.exe "$url"
+                    ;;
+                *)
+                    echo "Don't know how to open browser on this OS: $OSTYPE"
+                    ;;
+            esac
         else
             echo "Docker is installed but not running."
         fi
