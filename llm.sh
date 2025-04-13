@@ -78,6 +78,12 @@ case "$command" in
         if docker info &> /dev/null; then
             echo "Docker is installed and running."
             docker-compose up -d
+
+            if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+                xdg-open "http://localhost:3000"
+            elif [[ "$OSTYPE" == "darwin"* ]]; then
+                open "http://localhost:3000"
+            fi
         else
             echo "Docker is installed but not running."
         fi

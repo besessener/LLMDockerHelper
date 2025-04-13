@@ -14,11 +14,14 @@ if ($command -eq "start") {
         docker info | Out-Null
         Write-Host "Docker is installed and running." -ForegroundColor Green
         docker-compose up -d
+        
+        Start-Process "http://localhost:3000"
     }
     catch {
         Write-Host "Docker is installed but not running." -ForegroundColor Red
     }
 }
+
 
 elseif ($command -eq "stop") {
     docker-compose down
