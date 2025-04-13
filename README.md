@@ -9,6 +9,8 @@ This project provides a simple way to manage large language models (LLMs) via Do
 - Web UI for managing models and chatting
 - Supports both PowerShell (`llm.ps1`) and Shell (`llm.sh`)
 
+![](webui.png)
+
 ## Requirements
 
 - Docker installed and running
