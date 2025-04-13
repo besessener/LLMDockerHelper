@@ -1,0 +1,8 @@
+mistral:instruct
+deepseek-v3
+codellama
+mixtral
+codegemma
+codestral
+qwen2.5-coder
+deepseek-coder-v2
